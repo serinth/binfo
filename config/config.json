@@ -1,0 +1,8 @@
+{
+  "buildServer":"http://localhost:8085",
+  "credentials": {
+    "username":"",
+    "password":""
+  },
+  "projects": [ "PROJECTKEY1-PLANKEY1", "PROJECTKEY2-PLANKEY2" ]
+}

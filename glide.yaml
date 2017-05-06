@@ -1,0 +1,4 @@
+package: github.com/serinth/binfo
+import:
+- package: github.com/gizak/termui
+  version: ~2.2.0
