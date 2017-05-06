@@ -42,7 +42,7 @@ cd app
 For now there's only the Linux x64 binary so you will still need to
 1. clone this repo `git clone https://github.com/serinth/binfo.git`
 2. Update `config/config.json`
-2. run linux binary `./bin/binfo_x64`
+2. run linux binary `cd bin && ./binfo_x64`
 
 
 ## Currently Supported CI/CD software
