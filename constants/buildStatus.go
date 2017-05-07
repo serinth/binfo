@@ -1,5 +1,5 @@
 package constants
 
-const SUCCESS = "SUCCESS"
-const FAILED = "FAILED"
-const INPROGRESS = "BUILD IN PROGRESS"
+const SUCCESS = "Successful"
+const FAILED = "Failed"
+const UNKNOWN = "Unknown"
