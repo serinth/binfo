@@ -22,9 +22,15 @@ func main() {
 	ui.Handle("/timer/1s", func(e ui.Event) {
 		t := e.Data.(ui.EvtTimer)
 
-		if t.Count%10 == 0 {
+		if t.Count%5 == 0 {
 			bamboo.Update()
-			ui.Render(&bamboo.BuildTable)
+
+			//ui.Render(&bamboo.BuildTable)
+			for _, g := range bamboo.BuildsInProgressGauges {
+				//		fmt.Println(g.BorderLabel)
+				//	fmt.Println(g.BorderLabel, g.Percent)
+				ui.Render(&g)
+			}
 		}
 	})
 

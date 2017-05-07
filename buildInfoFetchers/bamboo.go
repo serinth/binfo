@@ -3,14 +3,17 @@ package buildInfoFetchers
 import (
 	"strings"
 
+	"strconv"
+
 	"github.com/gizak/termui"
 	configuration "github.com/serinth/binfo/config"
 	"github.com/serinth/binfo/util"
 )
 
 type Bamboo struct {
-	Config     configuration.Config
-	BuildTable termui.Table
+	Config                 configuration.Config
+	BuildTable             termui.Table
+	BuildsInProgressGauges []termui.Gauge
 }
 
 func NewBamboo(configPath string) *Bamboo {
@@ -37,6 +40,10 @@ func createTable(config configuration.Config) termui.Table {
 
 func (b *Bamboo) Update() {
 	b.BuildTable = createTable(b.Config)
+	b.BuildsInProgressGauges = createInProgressGauges(b.Config)
+	if len(b.BuildsInProgressGauges) == 0 {
+		b.BuildsInProgressGauges = nil
+	}
 }
 
 func (b *Bamboo) IsBeingBuilt(key string) bool {
@@ -94,6 +101,39 @@ func buildResourceURL(server string, key string) string {
 	return server + "/rest/api/latest/result/" + key + "/latest"
 }
 
+func buildNextResourceURL(server string, key string, currentBuildNumber int) string {
+	return server + "/rest/api/latest/result/" + key + "/" + strconv.Itoa(currentBuildNumber+1)
+}
+
+func createInProgressGauges(config configuration.Config) []termui.Gauge {
+	var gauges []termui.Gauge
+	for _, projectKey := range config.Projects {
+		currentResourceResponse := &BambooBuildResourceResponse{}
+		err := util.GetJson(buildResourceURL(config.BuildServer, projectKey), currentResourceResponse)
+		if err == nil {
+			resourceBuildInProgressResponse := &BambooBuildInProgressResponse{}
+			inProgressError := util.GetJson(buildNextResourceURL(config.BuildServer, projectKey, currentResourceResponse.BuildNumber), resourceBuildInProgressResponse)
+
+			if inProgressError == nil {
+				gauge := termui.NewGauge()
+				if int(resourceBuildInProgressResponse.Progress.PercentageCompleted*100) >= 100 {
+					gauge.Percent = 100
+				} else {
+					gauge.Percent = int(resourceBuildInProgressResponse.Progress.PercentageCompleted * 100)
+				}
+				gauge.BorderLabel = resourceBuildInProgressResponse.PlanName
+				gauge.BarColor = termui.ColorYellow
+				gauge.BorderFg = termui.ColorWhite
+				gauge.Width = 50
+				gauge.Height = 3
+
+				gauges = append(gauges, *gauge)
+			}
+		}
+	}
+	return gauges
+}
+
 type BambooBuildResourceResponse struct {
 	PlanName          string
 	LifeCycleState    string
@@ -122,6 +162,7 @@ type BambooBuildInProgressResponse struct {
 
 type progress struct {
 	IsUnderAverageTime         bool
+	PercentageCompleted        float64
 	PercentageCompletedPretty  string
 	PrettyTimeRemaining        string
 	PrettyAverageBuildDuration string
