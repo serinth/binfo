@@ -43,19 +43,20 @@ func (b *Bamboo) Update() {
 	b.BuildTable = table
 	b.tableHeight = height
 	b.ActiveBuildGauges = createInProgressGauges(height, b.Config)
-
 }
 
 func populateInitialProjectState(server string, projects []string) [][]string {
 	var rows = [][]string{
-		[]string{"Build Plan", "Last Built", "Status"},
+		[]string{"Build Plan", "Last Built", "Build No.", "Status"},
 	}
 
 	for _, projectKey := range projects {
 		result := &BambooBuildResourceResponse{}
 		err := util.GetJson(buildResourceURL(server, projectKey), result)
-		if err == nil {
-			rows = append(rows, []string{result.PlanName, result.BuildRelativeTime, result.State})
+		if err == nil && len(result.State) > 0 {
+			rows = append(rows, []string{result.PlanName, result.BuildRelativeTime, strconv.Itoa(result.BuildNumber), result.State})
+		} else {
+			rows = append(rows, []string{projectKey, "NA", "NA", "Unknown - Failed To Get Status For Key"})
 		}
 	}
 
@@ -89,7 +90,9 @@ func createInProgressGauges(tableHeight int, config configuration.Config) []term
 			resourceBuildInProgressResponse := &BambooBuildInProgressResponse{}
 			inProgressError := util.GetJson(buildNextResourceURL(config.BuildServer, projectKey, currentResourceResponse.BuildNumber), resourceBuildInProgressResponse)
 
-			if inProgressError == nil && resourceBuildInProgressResponse.State == constants.UNKNOWN {
+			if inProgressError == nil &&
+				resourceBuildInProgressResponse.State == constants.UNKNOWN &&
+				resourceBuildInProgressResponse.Progress.PercentageCompleted >= 0 {
 				gauge := termui.NewGauge()
 				percentageCompleted := int(resourceBuildInProgressResponse.Progress.PercentageCompleted * 100)
 

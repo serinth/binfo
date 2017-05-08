@@ -16,3 +16,7 @@
 
 # Binaries from this Project
 app/app
+
+# Exemptions
+!/bin/*.exe
+!/bin/app

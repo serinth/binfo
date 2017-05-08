@@ -86,5 +86,4 @@ func TestCreateInProgressGaugesShouldReturnProperAmountOfGauges(t *testing.T) {
 	if buffers[0].GetHeight() != 3 {
 		t.Error("Height of Gauge was not 3")
 	}
-
 }

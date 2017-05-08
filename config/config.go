@@ -7,14 +7,9 @@ import (
 
 // Config for application
 type Config struct {
-	BuildServer string      `json:"buildServer"`
-	Credentials credentials `json:"credentials"`
-	Projects    []string    `json:"projects"`
-}
-
-type credentials struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
+	BuildServer         string   `json:"buildServer"`
+	Projects            []string `json:"projects"`
+	RefreshIntervalSecs uint64   `json:"refreshIntervalSecs"`
 }
 
 // GetConfig returns system config

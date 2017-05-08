@@ -1,8 +1,5 @@
 {
-  "buildServer":"http://localhost:8085",
-  "credentials": {
-    "username":"",
-    "password":""
-  },
-  "projects": [ "TES-TES", "PROJ-BUIL" ]
+  "buildServer":"http://mybambooserver:port",
+  "projects": [ "PROJECTKEY-PLANKEY", "PROJKEY-PLANKEY" ],
+  "refreshIntervalSecs": 10  
 }

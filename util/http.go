@@ -22,7 +22,7 @@ func GetJson(url string, target interface{}) error {
 	r, err := client.Do(req)
 
 	if err != nil {
-		log.Println(err)
+		log.Println("Error fetching from URL")
 		return err
 	}
 

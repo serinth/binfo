@@ -4,7 +4,7 @@
 
 # Screenshot
 
-Automatically updates every 10 seconds.
+Refresh interval is configuration in `config/config.json`. When an active build is in progress, the refresh will switch to 2s.
 
 ![screenshot of binfo](./screenshot.png)
 
@@ -17,21 +17,20 @@ Just fill in the short project key and plan key which can be found in the URL wh
 
 ```json
 {
-  "buildServer":"http://localhost:8085",
-  "credentials": {
-    "username":"",
-    "password":""
-  },
-  "projects": [ "PROJECTKEY1-PLANKEY1", "PROJECTKEY2-PLANKEY2" ]
+  "buildServer":"http://localhost:8085", 
+  "projects": [ "PROJECTKEY1-PLANKEY1", "PROJECTKEY2-PLANKEY2" ],
+  "refreshIntervalSecs": 60
 }
 ```
+
+If you require a username and password, it can be part of the URL for basic auth e.g.
+`https://username:password@mybambooinstance.com`
 
 `Binfo` will automatically get the most recent build status.
 
 # Build From Source
 
 ```bash
-glide install
 go build ./...
 cd app
 ./app
@@ -39,10 +38,10 @@ cd app
 
 # Precompiled Packages
 
-For now there's only the Linux x64 binary so you will still need to
+For now binaries are available in `/bin` and should be run from that directory.
 1. clone this repo `git clone https://github.com/serinth/binfo.git`
 2. Update `config/config.json`
-2. run linux binary `cd bin && ./binfo_x64`
+2. run linux binary `cd bin && ./binfo_linux64`
 
 
 ## Currently Supported CI/CD software
