@@ -4,7 +4,7 @@
 
 # Screenshot
 
-Refresh interval is configuration in `config/config.json`. When an active build is in progress, the refresh will switch to 2s.
+Refresh interval is configuration in `config/config.json`. When an active build is in progress, the refresh will switch to 5s.
 
 ![screenshot of binfo](./screenshot.png)
 
@@ -27,6 +27,9 @@ If you require a username and password, it can be part of the URL for basic auth
 `https://username:password@mybambooinstance.com`
 
 `Binfo` will automatically get the most recent build status.
+
+# Logging
+HTTP errors are logged in `binfo_http_log.txt`. Username and Password will not be included in the logs.
 
 # Build From Source
 

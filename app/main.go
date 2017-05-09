@@ -29,7 +29,7 @@ func main() {
 		var interval uint64
 
 		if len(bamboo.ActiveBuildGauges) > 0 {
-			interval = 2
+			interval = 5
 		} else {
 			interval = config.RefreshIntervalSecs
 		}

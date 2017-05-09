@@ -20,3 +20,6 @@ app/app
 # Exemptions
 !/bin/*.exe
 !/bin/app
+
+# Logging
+binfo_http_log.txt

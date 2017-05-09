@@ -54,7 +54,7 @@ func populateInitialProjectState(server string, projects []string) [][]string {
 		result := &BambooBuildResourceResponse{}
 		err := util.GetJson(buildResourceURL(server, projectKey), result)
 		if err == nil && len(result.State) > 0 {
-			rows = append(rows, []string{result.PlanName, result.BuildRelativeTime, strconv.Itoa(result.BuildNumber), result.State})
+			rows = append(rows, []string{result.ProjectName + "-" + result.PlanName + "-" + result.BuildResultKey, result.BuildRelativeTime, strconv.Itoa(result.BuildNumber), result.State})
 		} else {
 			rows = append(rows, []string{projectKey, "NA", "NA", "Unknown - Failed To Get Status For Key"})
 		}
@@ -103,7 +103,7 @@ func createInProgressGauges(tableHeight int, config configuration.Config) []term
 				} else {
 					gauge.Percent = percentageCompleted
 				}
-				gauge.BorderLabel = resourceBuildInProgressResponse.PlanName
+				gauge.BorderLabel = currentResourceResponse.ProjectName + "-" + resourceBuildInProgressResponse.PlanName + "-" + resourceBuildInProgressResponse.Key
 				gauge.BarColor = termui.ColorYellow
 				gauge.BorderFg = termui.ColorWhite
 				gauge.Width = 50
@@ -119,6 +119,8 @@ func createInProgressGauges(tableHeight int, config configuration.Config) []term
 }
 
 type BambooBuildResourceResponse struct {
+	BuildResultKey    string
+	ProjectName       string
 	PlanName          string
 	LifeCycleState    string
 	Finished          bool
@@ -137,6 +139,7 @@ type BambooBuildInProgressResponse struct {
 	State          string
 	BuildNumber    int
 	Finished       bool
+	Key            string
 }
 
 type progress struct {
