@@ -1,5 +1,5 @@
 {
   "buildServer":"http://mybambooserver:port",
   "projects": [ "PROJECTKEY-PLANKEY", "PROJKEY-PLANKEY" ],
-  "refreshIntervalSecs": 10  
+  "refreshIntervalSecs": 30  
 }
