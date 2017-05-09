@@ -15,17 +15,16 @@ type Bamboo struct {
 	Config            configuration.Config
 	BuildTable        termui.GridBufferer
 	ActiveBuildGauges []termui.GridBufferer
-	tableHeight       int
 }
 
 func NewBamboo(configPath string) *Bamboo {
 	config, _ := configuration.GetConfig(configPath)
-	table, height := createStatusTable(config)
-	return &Bamboo{Config: config, BuildTable: table, tableHeight: height}
+	table := createStatusTable(config)
+	return &Bamboo{Config: config, BuildTable: table}
 
 }
 
-func createStatusTable(config configuration.Config) (termui.GridBufferer, int) {
+func createStatusTable(config configuration.Config) termui.GridBufferer {
 	table := termui.NewTable()
 	table.FgColor = termui.ColorWhite
 	table.BgColor = termui.ColorDefault
@@ -35,14 +34,13 @@ func createStatusTable(config configuration.Config) (termui.GridBufferer, int) {
 	table.SetSize()
 	colorBuildStates(*table)
 
-	return termui.GridBufferer(table), table.Height
+	return termui.GridBufferer(table)
 }
 
 func (b *Bamboo) Update() {
-	table, height := createStatusTable(b.Config)
+	table := createStatusTable(b.Config)
 	b.BuildTable = table
-	b.tableHeight = height
-	b.ActiveBuildGauges = createInProgressGauges(height, b.Config)
+	b.ActiveBuildGauges = createInProgressGauges(b.Config)
 }
 
 func populateInitialProjectState(server string, projects []string) [][]string {
@@ -80,9 +78,8 @@ func buildNextResourceURL(server string, key string, currentBuildNumber int) str
 	return server + "/rest/api/latest/result/" + key + "/" + strconv.Itoa(currentBuildNumber+1)
 }
 
-func createInProgressGauges(tableHeight int, config configuration.Config) []termui.GridBufferer {
+func createInProgressGauges(config configuration.Config) []termui.GridBufferer {
 	var gauges []termui.GridBufferer
-	var Y = tableHeight
 	for _, projectKey := range config.Projects {
 		currentResourceResponse := &BambooBuildResourceResponse{}
 		err := util.GetJson(buildResourceURL(config.BuildServer, projectKey), currentResourceResponse)
@@ -107,8 +104,6 @@ func createInProgressGauges(tableHeight int, config configuration.Config) []term
 				gauge.BarColor = termui.ColorYellow
 				gauge.BorderFg = termui.ColorWhite
 				gauge.Width = 50
-				Y += 3
-				gauge.Y = Y + 3
 				gauge.Height = 3
 
 				gauges = append(gauges, termui.GridBufferer(gauge))

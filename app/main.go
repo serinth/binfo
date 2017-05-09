@@ -26,7 +26,7 @@ func main() {
 
 	bamboo := buildInfoFetchers.NewBamboo(configPath)
 
-	ui.Render(bamboo.BuildTable)
+	drawBody(*bamboo)
 
 	ui.Handle("/sys/kbd/q", func(ui.Event) {
 		ui.StopLoop()
@@ -45,16 +45,21 @@ func main() {
 
 		if t.Count%interval == 0 {
 			bamboo.Update()
-			bufferers := []ui.Bufferer{bamboo.BuildTable}
-
-			for _, b := range bamboo.ActiveBuildGauges {
-				bufferers = append(bufferers, b)
-			}
-
-			ui.Clear()
-			ui.Render(bufferers...)
+			drawBody(*bamboo)
 		}
 	})
 
 	ui.Loop()
+}
+
+func drawBody(data buildInfoFetchers.Bamboo) {
+	ui.Clear()
+	ui.Body.Rows = nil
+	ui.Body.AddRows(
+		ui.NewRow(
+			ui.NewCol(12, 0, data.BuildTable)),
+		ui.NewRow(
+			ui.NewCol(6, 0, data.ActiveBuildGauges...)))
+	ui.Body.Align()
+	ui.Render(ui.Body)
 }

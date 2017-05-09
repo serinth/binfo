@@ -77,7 +77,7 @@ func TestCreateInProgressGaugesShouldReturnProperAmountOfGauges(t *testing.T) {
 	defer ts.Close()
 
 	config := &config.Config{BuildServer: ts.URL, Projects: []string{"TES-TES"}}
-	buffers := createInProgressGauges(3, *config)
+	buffers := createInProgressGauges(*config)
 
 	if len(buffers) != 1 {
 		t.Error("Did not create 1 gauge")
