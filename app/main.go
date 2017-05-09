@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	ui "github.com/gizak/termui"
 	"github.com/serinth/binfo/buildInfoFetchers"
 	configuration "github.com/serinth/binfo/config"
@@ -14,7 +17,13 @@ func main() {
 	defer ui.Close()
 
 	configPath := "../config/config.json"
-	config, _ := configuration.GetConfig(configPath)
+	config, err := configuration.GetConfig(configPath)
+
+	if err != nil {
+		fmt.Println("There was an error getting the configuration from ../config/config.json: ", err)
+		os.Exit(-1)
+	}
+
 	bamboo := buildInfoFetchers.NewBamboo(configPath)
 
 	ui.Render(bamboo.BuildTable)
