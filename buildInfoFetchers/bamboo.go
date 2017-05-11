@@ -89,6 +89,7 @@ func createInProgressGauges(config configuration.Config) []termui.GridBufferer {
 
 			if inProgressError == nil &&
 				resourceBuildInProgressResponse.State == constants.UNKNOWN &&
+				resourceBuildInProgressResponse.LifeCycleState == constants.INPROGRESS &&
 				resourceBuildInProgressResponse.Progress.PercentageCompleted >= 0 {
 				gauge := termui.NewGauge()
 				percentageCompleted := int(resourceBuildInProgressResponse.Progress.PercentageCompleted * 100)
